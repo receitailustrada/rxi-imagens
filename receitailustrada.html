@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RXI • Biblioteca (Adulto) - Dinâmica</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      /* Cores Escuras */
+      --bg-dark:#0a0e1a; /* Fundo principal */
+      --bg-medium:#1a1f2e; /* Fundo de painéis e cards */
+      --bg-light:#2a2f3e; /* Fundo de inputs e botões secundários */
+      --bg-card:#252a39; /* Fundo de cards de medicamentos */
+
+      /* Bordas e Textos */
+      --border-color:#3a3f4e;
+      --text-primary:#f8fafc; /* Texto principal */
+      --text-secondary:#cbd5e1; /* Texto secundário, descrições */
+
+      /* Cores de Destaque */
+      --accent:#3b82f6; /* Azul, para ações principais */
+      --accent-hover:#2563eb;
+      --accent-glow:rgba(59,130,246,.3); /* Efeito de brilho */
+
+      --success:#10b981; /* Verde, para sucesso/adicionado */
+      --success-hover:#059669;
+      --success-glow:rgba(16,185,129,.3);
+
+      --warning:#f59e0b; /* Laranja */
+      --danger:#ef4444; /* Vermelho, para remover/erro */
+
+      /* Outros */
+      --radius:8px;
+      --radius-lg:12px;
+      --shadow:0 4px 6px -1px rgba(0,0,0,.3); /* Sombra para elementos flutuantes */
+      --transition:all 0.15s cubic-bezier(0.4,0,0.2,1); /* Transições suaves */
+    }
+
+    /* Tema Claro */
+    html[data-theme="light"]{
+      --bg-dark:#f8fafc;
+      --bg-medium:#ffffff;
+      --bg-light:#f1f5f9;
+      --bg-card:#ffffff;
+      --border-color:#e2e8f0;
+      --text-primary:#0f172a;
+      --text-secondary:#475569;
+      --shadow:0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.06);
+    }
+
+    /* Reset Básico */
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+    }
+
+    body{
+      font-family:'Inter',system-ui,sans-serif;
+      background:var(--bg-dark);
+      color:var(--text-primary);
+      line-height:1.5;
+      overflow-x:hidden; /* Evita scroll horizontal */
+    }
+    
+    /* HEADER COMPACTO */
+    .header{
+      position:sticky;
+      top:0;
+      z-index:100;
+      /* background:rgba(var(--bg-medium-rgb), 0.8); REMOVIDO: Linha com erro */
+      border-bottom:1px solid var(--border-color);
+      backdrop-filter:blur(8px); /* Efeito de vidro fosco */
+      -webkit-backdrop-filter:blur(8px);
+      padding:0.75rem 1rem;
+      box-shadow:var(--shadow); /* Sombra sutil */
+    }
+    html[data-theme="light"] .header { background: rgba(255,255,255,0.8); }
+    html[data-theme="dark"] .header { background: rgba(26,31,46,0.8); }
+
+
+    .header-content{
+      max-width:1600px;
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      gap:1rem;
+      flex-wrap:wrap; /* Quebra para telas menores */
+    }
+
+    .logo{
+      font-size:1.25rem;
+      font-weight:700;
+      color:var(--accent);
+      white-space:nowrap;
+    }
+
+    .search-box{
+      flex:1; /* Ocupa o máximo de espaço possível */
+      min-width:300px; /* Largura mínima para ser funcional */
+      position:relative;
+    }
+
+    .search-input{
+      width:100%;
+      padding:0.5rem 0.75rem 0.5rem 2.5rem; /* Padding para o ícone */
+      border:1px solid var(--border-color);
+      border-radius:var(--radius);
+      background:var(--bg-light);
+      color:var(--text-primary);
+      font-size:0.875rem;
+      transition:var(--transition);
+    }
+
+    .search-input:focus{
+      outline:none;
+      border-color:var(--accent);
+      box-shadow:0 0 0 3px var(--accent-glow); /* Efeito de brilho no foco */
+    }
+
+    .search-icon{
+      position:absolute;
+      left:0.75rem;
+      top:50%;
+      transform:translateY(-50%);
+      color:var(--text-secondary);
+    }
+
+    .quick-actions{
+      display:flex;
+      gap:0.5rem;
+      align-items:center;
+    }
+
+    .theme-btn,
+    .action-btn{
+      padding:0.5rem;
+      border:1px solid var(--border-color);
+      border-radius:var(--radius);
+      background:var(--bg-light);
+      color:var(--text-secondary);
+      cursor:pointer;
+      transition:var(--transition);
+      font-size:0.875rem;
+      white-space:nowrap; /* Evita quebra de linha */
+    }
+
+    .theme-btn:hover,
+    .action-btn:hover{
+      border-color:var(--accent);
+      color:var(--accent);
+    }
+
+    .action-btn.primary{
+      background:var(--success);
+      color:white;
+      border-color:var(--success);
+    }
+    .action-btn.primary:hover{
+      background:var(--success-hover);
+    }
+
+    /* LAYOUT PRINCIPAL (3 COLUNAS) */
+    .main-layout{
+      max-width:1600px;
+      margin:0 auto;
+      padding:1rem;
+      display:grid;
+      grid-template-columns:250px 1fr 350px; /* Sidebar | Grid de Medicamentos | Painel de Saída */
+      gap:1rem;
+      min-height:calc(100vh - 80px); /* Ocupa o restante da altura da tela */
+    }
+
+    /* Responsividade do Layout Principal */
+    @media(max-width:1200px){
+      .main-layout{
+        grid-template-columns:1fr 300px; /* Esconde sidebar, medicamentos + saída */
+      }
+      .sidebar{
+        display:none;
+      }
+    }
+
+    @media(max-width:768px){
+      .main-layout{
+        grid-template-columns:1fr; /* Uma única coluna */
+        gap:0.5rem;
+      }
+      .output-panel{
+        order:-1; /* Painel de saída no topo em mobile */
+        position: static; /* Remove sticky em mobile */
+      }
+    }
+
+    /* SIDEBAR DE FILTROS */
+    .sidebar{
+      background:var(--bg-medium);
+      border:1px solid var(--border-color);
+      border-radius:var(--radius-lg);
+      padding:1rem;
+      height:fit-content; /* Se ajusta ao conteúdo */
+      position:sticky; /* Fixa na tela ao rolar */
+      top:90px; /* Abaixo do header */
+      box-shadow:var(--shadow);
+    }
+
+    .sidebar h3{
+      font-size:0.875rem;
+      font-weight:600;
+      margin-bottom:0.75rem;
+      color:var(--text-secondary);
+      text-transform:uppercase;
+      letter-spacing:0.05em;
+    }
+
+    .filter-grid{
+      display:grid;
+      gap:0.5rem;
+    }
+
+    .filter-btn{
+      padding:0.5rem 0.75rem;
+      border:1px solid var(--border-color);
+      border-radius:var(--radius);
+      background:var(--bg-light);
+      color:var(--text-secondary);
+      cursor:pointer;
+      transition:var(--transition);
+      font-size:0.75rem;
+      font-weight:500;
+      display:flex;
+      align-items:center;
+      gap:0.5rem;
+      text-align:left;
+      width:100%; /* Ocupa a largura total na sidebar */
+    }
+
+    .filter-btn:hover{
+      border-color:var(--accent);
+      color:var(--accent);
+    }
+
+    .filter-btn.active{
+      background:var(--accent);
+      color:white;
+      border-color:var(--accent);
+      box-shadow:0 0 0 3px var(--accent-glow);
+    }
+
+    .filter-count{
+      margin-left:auto; /* Empurra para a direita */
+      background:var(--bg-dark);
+      color:var(--text-secondary);
+      padding:0.125rem 0.375rem;
+      border-radius:10px;
+      font-size:0.625rem;
+      min-width:18px; /* Garante que o círculo não se achate */
+      text-align:center;
+    }
+    .filter-btn.active .filter-count{
+      background:rgba(255,255,255,0.2);
+      color:white;
+    }
+
+    /* GRID DE MEDICAMENTOS */
+    .drugs-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); /* Auto-ajuste de colunas */
+      gap:0.75rem;
+      align-content:start; /* Alinha o conteúdo ao topo */
+    }
+
+    .drug-card{
+      background:var(--bg-card);
+      border:1px solid var(--border-color);
+      border-radius:var(--radius-lg);
+      padding:0.75rem;
+      cursor:pointer;
+      transition:var(--transition);
+      position:relative;
+      overflow:hidden; /* Garante que elementos não extravasem */
+      box-shadow:var(--shadow);
+    }
+
+    .drug-card:hover{
+      border-color:var(--accent);
+      transform:translateY(-1px); /* Leve levantamento */
+      box-shadow:0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .drug-card.selected{
+      border-color:var(--success);
+      background:linear-gradient(135deg,var(--bg-card),rgba(16,185,129,0.05)); /* Leve gradiente */
+      box-shadow:0 0 0 2px var(--success-glow); /* Brilho de seleção */
+    }
+
+    .drug-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      margin-bottom:0.5rem;
+    }
+
+    .drug-name{
+      font-size:0.875rem;
+      font-weight:600;
+      line-height:1.3;
+      flex:1;
+      color:var(--text-primary);
+    }
+
+    .drug-category{
+      background:var(--bg-light);
+      color:var(--text-secondary);
+      padding:0.125rem 0.375rem;
+      border-radius:4px;
+      font-size:0.625rem;
+      font-weight:500;
+      white-space:nowrap;
+      margin-left:0.5rem;
+    }
+
+    .drug-preview{
+      font-size:0.75rem;
+      color:var(--text-secondary);
+      line-height:1.4;
+      margin-bottom:0.75rem;
+      display:-webkit-box; /* Para ellipsis multi-linha */
+      -webkit-line-clamp:2; /* Limita a 2 linhas */
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+    }
+
+    .drug-actions{
+      display:flex;
+      gap:0.375rem;
+    }
+
+    .drug-btn{
+      flex:1;
+      padding:0.375rem 0.5rem;
+      border:1px solid var(--border-color);
+      border-radius:var(--radius);
+      background:var(--bg-light);
+      color:var(--text-secondary);
+      cursor:pointer;
+      transition:var(--transition);
+      font-size:0.625rem;
+      font-weight:500;
+      text-transform:uppercase;
+      letter-spacing:0.025em;
+    }
+
+    .drug-btn:hover{
+      border-color:var(--accent);
+      color:var(--accent);
+    }
+
+    .drug-btn.add{
+      background:var(--success);
+      color:white;
+      border-color:var(--success);
+    }
+    .drug-btn.add:hover{
+      background:var(--success-hover);
+    }
+    .drug-btn.remove{
+      background:var(--danger);
+      color:white;
+      border-color:var(--danger);
+    }
+    .drug-btn.remove:hover {
+      filter: brightness(0.9);
+    }
+
+    /* PAINEL DE SAÍDA */
+    .output-panel{
+      background:var(--bg-medium);
+      border:1px solid var(--border-color);
+      border-radius:var(--radius-lg);
+      padding:1rem;
+      height:fit-content; /* Ajusta ao conteúdo */
+      position:sticky; /* Fixa na tela ao rolar */
+      top:90px; /* Abaixo do header */
+      box-shadow:var(--shadow);
+    }
+
+    .output-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:0.75rem;
+    }
+
+    .output-title{
+      font-size:0.875rem;
+      font-weight:600;
+      color:var(--text-secondary);
+      text-transform:uppercase;
+      letter-spacing:0.05em;
+    }
+
+    .selected-count{
+      background:var(--success);
+      color:white;
+      padding:0.125rem 0.5rem;
+      border-radius:10px;
+      font-size:0.625rem;
+      font-weight:500;
+      min-width:20px;
+      text-align:center;
+      transition: transform 0.2s ease-out;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.25); }
+      100% { transform: scale(1); }
+    }
+    .selected-count.updated {
+      animation: pop 0.3s ease-out;
+    }
+
+    .output-textarea{
+      width:100%;
+      min-height:300px;
+      max-height:400px; /* Limite para não crescer demais */
+      border:1px solid var(--border-color);
+      border-radius:var(--radius);
+      padding:0.75rem;
+      background:var(--bg-light);
+      color:var(--text-primary);
+      font-family:'Menlo', 'Courier New', monospace;
+      font-size:0.75rem;
+      line-height:1.6;
+      resize:vertical; /* Permite redimensionar verticalmente */
+      outline:none;
+      transition:var(--transition);
+    }
+
+    .output-textarea:focus{
+      border-color:var(--accent);
+      box-shadow:0 0 0 3px var(--accent-glow);
+    }
+
+    .output-actions{
+      display:grid;
+      grid-template-columns:1fr 1fr; /* Dois botões por linha */
+      gap:0.5rem;
+      margin-top:0.75rem;
+    }
+
+    .output-btn{
+      padding:0.5rem;
+      border:1px solid var(--border-color);
+      border-radius:var(--radius);
+      background:var(--bg-light);
+      color:var(--text-secondary);
+      cursor:pointer;
+      transition:var(--transition);
+      font-size:0.75rem;
+      font-weight:500;
+      text-transform:uppercase;
+      letter-spacing:0.025em;
+    }
+
+    .output-btn:hover{
+      border-color:var(--accent);
+      color:var(--accent);
+    }
+
+    .output-btn.primary{
+      background:var(--accent);
+      color:white;
+      border-color:var(--accent);
+    }
+    .output-btn.primary:hover{
+      background:var(--accent-hover);
+    }
+
+    /* TOAST NOTIFICATIONS */
+    .toast{
+      position:fixed;
+      top:90px; /* Abaixo do header */
+      right:1rem;
+      z-index:200;
+      background:var(--bg-medium);
+      border:1px solid var(--border-color);
+      border-radius:var(--radius);
+      padding:0.75rem 1rem;
+      color:var(--text-primary);
+      box-shadow:var(--shadow);
+      opacity:0;
+      transform:translateX(100%); /* Começa fora da tela */
+      transition:var(--transition);
+      font-size:0.875rem;
+      max-width:300px;
+      pointer-events:none; /* Permite cliques por baixo */
+    }
+
+    .toast.show{
+      opacity:1;
+      transform:translateX(0); /* Desliza para dentro */
+      pointer-events:auto;
+    }
+
+    .toast.success{
+      border-color:var(--success);
+      background:linear-gradient(135deg,var(--bg-medium),rgba(16,185,129,0.1));
+    }
+    .toast.error{
+      border-color:var(--danger);
+      background:linear-gradient(135deg,var(--bg-medium),rgba(239,68,68,0.1));
+    }
+
+    /* ANIMAÇÕES SUTIS */
+    @keyframes slideIn{
+      from{opacity:0;transform:translateY(10px);}
+      to{opacity:1;transform:translateY(0);}
+    }
+    .drug-card{
+      animation:slideIn 0.2s ease-out backwards; /* Animação ao carregar cards */
+    }
+    
+    /* RESPONSIVE IMPROVEMENTS */
+    @media(max-width:640px){
+      .header-content{
+        flex-direction:column; /* Stack all header elements */
+        gap:0.5rem;
+        align-items:stretch; /* Stretch items to fill width */
+      }
+      .logo{
+        text-align:center;
+      }
+      .search-box{
+        min-width:unset; /* Remove min-width constraint */
+        width:100%;
+      }
+      .quick-actions{
+        width:100%;
+        justify-content:center; /* Center buttons */
+      }
+      .theme-btn, .action-btn{
+        flex:1; /* Make buttons fill available width */
+      }
+      .drugs-grid{
+        grid-template-columns:1fr; /* Single column for drugs */
+      }
+      .output-actions{
+        grid-template-columns:1fr; /* Single column for output buttons */
+      }
+      .toast{
+        right:0.5rem;
+        left:0.5rem;
+        max-width:unset; /* Full width on small screens */
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER COMPACTO E FIXO -->
+  <header class="header">
+    <div class="header-content">
+      <div class="logo">⚡ RXI Dinâmico</div>
+      <div class="search-box">
+        <div class="search-icon">🔍</div>
+        <input type="search" id="searchInput" class="search-input" 
+               placeholder="Digite medicamento, dose ou indicação..." 
+               autocomplete="off">
+      </div>
+      <div class="quick-actions">
+        <button id="themeBtn" class="theme-btn" title="Alternar tema claro/escuro">🌓</button>
+        <button id="quickCopyBtn" class="action-btn primary" title="Copiar toda a prescrição">📋 COPIAR</button>
+        <button id="clearBtn" class="action-btn" title="Limpar toda a prescrição">🗑️</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- LAYOUT PRINCIPAL -->
+  <div class="main-layout">
+    <!-- SIDEBAR DE FILTROS -->
+    <aside class="sidebar">
+      <h3>📂 CATEGORIAS</h3>
+      <div id="filtersContainer" class="filter-grid">
+        <!-- Filtros serão renderizados aqui pelo JS -->
+      </div>
+    </aside>
+
+    <!-- GRID DE MEDICAMENTOS -->
+    <main class="drugs-grid" id="drugsGrid">
+      <!-- Cards de medicamentos serão renderizados aqui pelo JS -->
+    </main>
+
+    <!-- PAINEL DE SAÍDA -->
+    <aside class="output-panel">
+      <div class="output-header">
+        <h3 class="output-title">📝 Prescrição</h3>
+        <span id="selectedCount" class="selected-count">0</span>
+      </div>
+      <textarea id="outputTextarea" class="output-textarea" 
+                placeholder="Medicamentos selecionados aparecerão aqui..."></textarea>
+      <div class="output-actions">
+        <button id="copyBtn" class="output-btn primary" title="Copiar texto da prescrição">📋 COPIAR</button>
+        <button id="printBtn" class="output-btn" title="Imprimir prescrição">🖨️ IMPRIMIR</button>
+      </div>
+    </aside>
+  </div>
+
+  <!-- TOAST NOTIFICATIONS -->
+  <div id="toast" class="toast"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Mapeamento de ícones para as categorias
+      const CLASS_ICONS = {
+        'SINTOMÁTICOS': '🤕', 'ANTIMICROBIANOS': '🧫', 'AINE/CORTICOSTEROIDE': '💊',
+        'IBP': '🌋', 'ANTI-HIPERTENSIVO': '🫀', 'ANTIDEPRESSIVO': '🙂',
+        'HIPOLIPEMIANTE': '🧈', 'REUMATO': '🦶', 'ENDÓCRINO': '🦋',
+        'CIRCULATÓRIO': '🩸', 'CONTROLADOS C1': '🔒', 'ANTIFÚNGICO': '🍄',
+        'POPULAR': '🇧🇷', 'ORIENTAÇÃO': '💬', 'SUPORTE': '🥗', 'TODOS': '✨'
+      };
+
+      // Dados dos medicamentos
+      const drugs = [
+        {id: 1, name: 'Paracetamol 500mg', category: 'SINTOMÁTICOS', content: 'paracetamol 500 mg — tomar 1 comprimido VO a cada 8 horas se dor ou febre.\nmáximo diário: 3 g.\npreferir após alimentação.'},
+        {id: 2, name: 'Dipirona 500mg', category: 'SINTOMÁTICOS', content: 'dipirona 500 mg — tomar 1 comprimido VO a cada 6–8 horas se dor ou febre.\nmáximo diário: 4 g.'},
+        {id: 3, name: 'Ibuprofeno 600mg', category: 'AINE/CORTICOSTEROIDE', content: 'ibuprofeno 600 mg — tomar 1 comprimido VO a cada 8 horas se dor/inflamação.\ntomar com alimento.'},
+        {id: 4, name: 'Omeprazol 20mg', category: 'IBP', content: 'omeprazol 20 mg — 1 cápsula VO 30–45 min antes do café da manhã.\npor 4–8 semanas; reavaliar.'},
+        {id: 5, name: 'Losartana 50mg', category: 'ANTI-HIPERTENSIVO', content: 'losartana 50 mg — 1 comprimido VO 1x/dia.'},
+        {id: 6, name: 'Azitromicina 500mg', category: 'ANTIMICROBIANOS', content: 'azitromicina 500 mg — tomar 1 comprimido VO 1x/dia por 3 dias.\ntomar 1 h antes ou 2 h após refeição.'},
+        {id: 7, name: 'Sinvastatina 20mg', category: 'HIPOLIPEMIANTE', content: 'sinvastatina 20 mg — 1 comprimido VO antes de dormir.'},
+        {id: 8, name: 'Metformina 500mg', category: 'ENDÓCRINO', content: 'metformina 500 mg — 1 comprimido VO com as refeições; iniciar 1–2x/dia e ajustar conforme tolerância.'},
+        {id: 9, name: 'Cefalexina 500mg', category: 'ANTIMICROBIANOS', content: 'cefalexina 500 mg — 1 cápsula VO a cada 6 horas por 7 dias.'},
+        {id: 10, name: 'Amoxicilina 875mg + Clavulanato 125mg', category: 'ANTIMICROBIANOS', content: 'amoxicilina 875mg + clavulanato 125mg — 1 comprimido VO a cada 12 horas por 10 dias.'},
+        {id: 11, name: 'Fluoxetina 20mg', category: 'ANTIDEPRESSIVO', content: 'fluoxetina 20 mg — iniciar com 1 cápsula VO pela manhã.\nreavaliar em 2-4 semanas.'},
+        {id: 12, name: 'Atenolol 25mg', category: 'ANTI-HIPERTENSIVO', content: 'atenolol 25 mg — 1 comprimido VO 1x/dia.'},
+        {id: 13, name: 'Prednisona 20mg', category: 'AINE/CORTICOSTEROIDE', content: 'prednisona 20 mg — 1 comprimido VO pela manhã.\npor 5 dias, depois reduzir dose.'},
+        {id: 14, name: 'Dorflex', category: 'SINTOMÁTICOS', content: 'dorflex — tomar 1 comprimido VO a cada 6 horas se dor muscular.\nNão exceder 4 comprimidos/dia.'},
+        {id: 15, name: 'Hidroclorotiazida 25mg', category: 'ANTI-HIPERTENSIVO', content: 'hidroclorotiazida 25 mg — 1 comprimido VO pela manhã.'},
+        {id: 16, name: 'Dipirona Gotas 500mg/mL', category: 'SINTOMÁTICOS', content: 'dipirona 500 mg/mL — tomar 20-40 gotas VO a cada 6 horas se dor ou febre.\nmáximo diário: 160 gotas.'},
+        {id: 17, name: 'Vitamina D 1000 UI', category: 'SUPORTE', content: 'vitamina D 1000 UI — 1 cápsula VO 1x/dia.'},
+        {id: 18, name: 'Captopril 25mg', category: 'ANTI-HIPERTENSIVO', content: 'captopril 25 mg — 1 comprimido VO 2-3x/dia, conforme pressão arterial.'},
+        {id: 19, name: 'Sertralina 50mg', category: 'ANTIDEPRESSIVO', content: 'sertralina 50 mg — 1 comprimido VO 1x/dia, preferencialmente pela manhã ou noite.'},
+        {id: 20, name: 'Probiótico - Lactobacilos', category: 'SUPORTE', content: 'probiótico (ex: Lactobacilos) — 1 cápsula VO 1x/dia, longe de antibióticos.'},
+        {id: 21, name: 'Orientação - Hidratação', category: 'ORIENTAÇÃO', content: 'Orientar o paciente a manter boa hidratação, ingerindo pelo menos 2 litros de água por dia.'},
+        {id: 22, name: 'Orientação - Dieta', category: 'ORIENTAÇÃO', content: 'Orientar o paciente sobre a importância de uma dieta equilibrada, rica em frutas, legumes e proteínas magras.'},
+        {id: 23, name: 'Varfarina 5mg', category: 'CIRCULATÓRIO', content: 'varfarina 5 mg — 1 comprimido VO 1x/dia.\nRealizar controle de INR semanalmente até estabilização.'},
+        {id: 24, name: 'Clopidogrel 75mg', category: 'CIRCULATÓRIO', content: 'clopidogrel 75 mg — 1 comprimido VO 1x/dia.'},
+        {id: 25, name: 'Insulina NPH', category: 'ENDÓCRINO', content: 'insulina NPH — X UI subcutânea antes do café da manhã e X UI antes do jantar.\nAjustar dose conforme glicemia capilar.'},
+        {id: 26, name: 'Atenção ao Pós-Consulta', category: 'POPULAR', content: 'Paciente orientado sobre retorno em X dias/semanas para reavaliação. Em caso de piora dos sintomas ou efeitos adversos, procurar atendimento médico imediatamente.'},
+        {id: 27, name: 'Anti-histamínico - Loratadina 10mg', category: 'SINTOMÁTICOS', content: 'loratadina 10 mg — 1 comprimido VO 1x/dia se sintomas alérgicos (coriza, espirros, coceira).'}
+      ];
+
+      // Chave para o localStorage
+      const STORAGE_KEY = 'rxi-dynamic-selection';
+
+      // Estado da aplicação
+      const state = {
+        selectedDrugs: new Set(),
+        currentFilter: 'TODOS',
+        searchTerm: ''
+      };
+
+      // Elementos DOM
+      const elements = {
+        drugsGrid: document.getElementById('drugsGrid'),
+        filtersContainer: document.getElementById('filtersContainer'),
+        searchInput: document.getElementById('searchInput'),
+        outputTextarea: document.getElementById('outputTextarea'),
+        selectedCount: document.getElementById('selectedCount'),
+        toast: document.getElementById('toast'),
+        themeBtn: document.getElementById('themeBtn'),
+        copyBtn: document.getElementById('copyBtn'),
+        quickCopyBtn: document.getElementById('quickCopyBtn'),
+        clearBtn: document.getElementById('clearBtn'),
+        printBtn: document.getElementById('printBtn')
+      };
+
+      const showToast = (message, type = 'info') => {
+        elements.toast.textContent = message;
+        elements.toast.className = `toast show ${type}`;
+        setTimeout(() => elements.toast.classList.remove('show'), 3000);
+      };
+
+      const copyToClipboard = async (text) => {
+        if (!text.trim()) {
+            showToast('🚫 Não há conteúdo para copiar.', 'error');
+            return false;
+        }
+        try {
+          await navigator.clipboard.writeText(text);
+          showToast('✅ Copiado com sucesso!', 'success');
+          return true;
+        } catch (err) {
+          console.error('Erro ao copiar: ', err);
+          showToast('❌ Erro ao copiar.', 'error');
+          return false;
+        }
+      };
+
+      const updateOutput = () => {
+        const selectedDrugsArray = Array.from(state.selectedDrugs)
+          .map(id => drugs.find(d => d.id === id))
+          .filter(Boolean)
+          .sort((a, b) => a.id - b.id); // Mantém a ordem de seleção
+        
+        elements.outputTextarea.value = selectedDrugsArray
+          .map(drug => drug.content)
+          .join('\n\n');
+        
+        const count = selectedDrugsArray.length;
+        if (elements.selectedCount.textContent !== String(count)) {
+            elements.selectedCount.textContent = count;
+            elements.selectedCount.classList.add('updated');
+            setTimeout(() => elements.selectedCount.classList.remove('updated'), 300);
+        }
+      };
+
+      const toggleDrugSelection = (drugId) => {
+        if (state.selectedDrugs.has(drugId)) {
+          state.selectedDrugs.delete(drugId);
+        } else {
+          state.selectedDrugs.add(drugId);
+        }
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(state.selectedDrugs)));
+        updateOutput();
+        renderDrugs();
+      };
+
+      const renderFilters = () => {
+        const categories = ['TODOS', ...new Set(drugs.map(d => d.category))].sort((a, b) => a === 'TODOS' ? -1 : b === 'TODOS' ? 1 : a.localeCompare(b));
+        elements.filtersContainer.innerHTML = categories.map(cat => {
+          const count = cat === 'TODOS' ? drugs.length : drugs.filter(d => d.category === cat).length;
+          const icon = CLASS_ICONS[cat] || '💊';
+          return `
+            <button class="filter-btn ${state.currentFilter === cat ? 'active' : ''}" 
+                    data-filter="${cat}">
+              <span class="filter-icon">${icon}</span>
+              <span>${cat}</span>
+              <span class="filter-count">${count}</span>
+            </button>
+          `;
+        }).join('');
+      };
+
+      const renderDrugs = () => {
+        const filteredDrugs = drugs.filter(drug => {
+          const matchesFilter = state.currentFilter === 'TODOS' || drug.category === state.currentFilter;
+          const lowerCaseSearchTerm = state.searchTerm.toLowerCase();
+          const matchesSearch = !lowerCaseSearchTerm || 
+            drug.name.toLowerCase().includes(lowerCaseSearchTerm) ||
+            drug.content.toLowerCase().includes(lowerCaseSearchTerm) ||
+            drug.category.toLowerCase().includes(lowerCaseSearchTerm);
+          return matchesFilter && matchesSearch;
+        });
+
+        elements.drugsGrid.innerHTML = filteredDrugs.map(drug => {
+          const isSelected = state.selectedDrugs.has(drug.id);
+          const preview = drug.content.split('\n')[0];
+          return `
+            <article class="drug-card ${isSelected ? 'selected' : ''}" data-drug-id="${drug.id}">
+              <div class="drug-header">
+                <h3 class="drug-name">${drug.name}</h3>
+                <span class="drug-category">${CLASS_ICONS[drug.category] || '💊'}</span>
+              </div>
+              <p class="drug-preview">${preview}</p>
+              <div class="drug-actions">
+                <button class="drug-btn ${isSelected ? 'remove' : 'add'}" data-action="toggle">
+                  ${isSelected ? '✓ REMOVER' : '+ ADICIONAR'}
+                </button>
+                <button class="drug-btn" data-action="copy" title="Copiar somente este item">📋</button>
+              </div>
+            </article>
+          `;
+        }).join('');
+      };
+
+      elements.filtersContainer.addEventListener('click', (e) => {
+        const filterBtn = e.target.closest('.filter-btn');
+        if (filterBtn) {
+          state.currentFilter = filterBtn.dataset.filter;
+          renderFilters();
+          renderDrugs();
+        }
+      });
+
+      elements.drugsGrid.addEventListener('click', (e) => {
+        const drugCard = e.target.closest('.drug-card');
+        if (!drugCard) return;
+        const drugId = parseInt(drugCard.dataset.drugId);
+        const actionButton = e.target.closest('.drug-btn');
+        if (actionButton) {
+          e.stopPropagation(); // Evita que o clique no botão dispare o clique no card
+          const action = actionButton.dataset.action;
+          if (action === 'toggle') {
+            toggleDrugSelection(drugId);
+          } else if (action === 'copy') {
+            const drug = drugs.find(d => d.id === drugId);
+            copyToClipboard(drug.content);
+          }
+        } else {
+            toggleDrugSelection(drugId);
+        }
+      });
+
+      elements.searchInput.addEventListener('input', (e) => {
+        state.searchTerm = e.target.value;
+        renderDrugs();
+      });
+
+      elements.copyBtn.addEventListener('click', () => {
+        copyToClipboard(elements.outputTextarea.value);
+      });
+
+      elements.quickCopyBtn.addEventListener('click', () => {
+        copyToClipboard(elements.outputTextarea.value);
+      });
+
+      elements.clearBtn.addEventListener('click', () => {
+        if (state.selectedDrugs.size === 0) {
+            showToast('Nenhum item para limpar.', 'info');
+            return;
+        }
+        state.selectedDrugs.clear();
+        localStorage.removeItem(STORAGE_KEY);
+        updateOutput();
+        renderDrugs();
+        showToast('🗑️ Prescrição limpa!', 'info');
+      });
+
+      elements.printBtn.addEventListener('click', () => {
+        if (!elements.outputTextarea.value.trim()) {
+          showToast('❌ Nada para imprimir.', 'error');
+          return;
+        }
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(`
+          <html>
+            <head>
+              <title>Prescrição</title>
+              <style>
+                body { font-family: 'Inter', sans-serif; white-space: pre-wrap; margin: 20px; line-height: 1.6; }
+                h1 { text-align: center; margin-bottom: 20px; }
+              </style>
+            </head>
+            <body>
+              <h1>Prescrição Médica</h1>
+              <pre>${elements.outputTextarea.value}</pre>
+              <script>
+                window.onload = function() {
+                  window.print();
+                  window.onafterprint = function() {
+                    window.close();
+                  };
+                };
+              <\/script>
+            </body>
+          </html>
+        `);
+        printWindow.document.close();
+      });
+
+      elements.themeBtn.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('rxi-theme', newTheme);
+        showToast(`Tema alterado para ${newTheme === 'light' ? 'claro ☀️' : 'escuro 🌙'}`, 'info');
+      });
+
+      const init = () => {
+        const savedTheme = localStorage.getItem('rxi-theme');
+        const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme', savedTheme || (systemPrefersDark ? 'dark' : 'light'));
+        
+        const savedSelection = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        state.selectedDrugs = new Set(savedSelection);
+        
+        renderFilters();
+        renderDrugs();
+        updateOutput();
+      };
+
+      init();
+    });
+  </script>
+</body>
+</html>
