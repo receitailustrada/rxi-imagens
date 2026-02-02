@@ -157,4 +157,5 @@ body {
 @media (max-width: 1024px) {
     .grid { gap: 1rem; }
     .card { padding: 1rem; }
+
 }
