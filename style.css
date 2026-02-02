@@ -1,0 +1,160 @@
+/* PAINEL ESTRATÉGICO CRUZ ALTA 2030 
+   Estilo Global e Setorização por Cores
+*/
+
+:root {
+    --google-blue: #1a73e8;
+    --google-green: #34a853;
+    --google-red: #ea4335;
+    --google-yellow: #fbbc05;
+    
+    /* Cores dos Módulos */
+    --color-saude: #10b981;    /* Esmeralda */
+    --color-educ: #8b5cf6;     /* Violeta */
+    --color-infra: #f59e0b;    /* Âmbar */
+    --color-econ: #3b82f6;     /* Azul */
+    --color-risco: #ef4444;    /* Vermelho */
+    
+    --bg-main: #f1f5f9;
+    --panel-white: #ffffff;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --radius-lg: 18px;
+    --radius-md: 12px;
+}
+
+/* Tipografia Geral - Aumento de 1px a 2px conforme solicitado */
+body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.15rem; /* Aprox. 18px */
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar Customizada */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+
+/* Cabeçalho e Separadores */
+.header-separator {
+    display: flex;
+    height: 6px;
+    width: 100%;
+}
+.sep-blue { flex: 1; background: var(--google-blue); }
+.sep-red { flex: 1; background: var(--google-red); }
+.sep-yellow { flex: 1; background: var(--google-yellow); }
+.sep-green { flex: 1; background: var(--google-green); }
+
+/* Cards e Layout */
+.card {
+    background: var(--panel-white);
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+.card:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* Setorização por Cores (Visual Didático) */
+.view-saude h2 { border-left: 6px solid var(--color-saude); padding-left: 15px; color: #065f46; }
+.view-educ h2 { border-left: 6px solid var(--color-educ); padding-left: 15px; color: #4c1d95; }
+.view-infra h2 { border-left: 6px solid var(--color-infra); padding-left: 15px; color: #92400e; }
+.view-risco h2 { border-left: 6px solid var(--color-risco); padding-left: 15px; color: #991b1b; }
+
+/* Tabelas */
+.mini-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    font-size: 0.95rem;
+}
+.mini-table th {
+    background: #f8fafc;
+    padding: 1rem;
+    text-align: left;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+}
+.mini-table td {
+    padding: 1rem;
+    border-top: 1px solid #e2e8f0;
+    vertical-align: top;
+}
+
+/* Botões */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+}
+.btn.primary {
+    background: var(--google-blue);
+    color: white;
+    border: none;
+}
+.btn.primary:hover {
+    background: #1557b0;
+    transform: translateY(-2px);
+}
+
+/* Sidebar Nav */
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: 0.2s;
+}
+.nav-item:hover {
+    background: #f1f5f9;
+    color: var(--text-main);
+}
+.nav-item.active {
+    background: #1e293b;
+    color: white !important;
+}
+
+/* Estilo Retro para o Editor */
+.mono-note {
+    font-family: 'Courier New', Courier, monospace;
+    background: #fdfdfd;
+    border: 2px solid #cbd5e1;
+    padding: 1.5rem;
+    border-radius: 8px;
+    line-height: 1.5;
+    font-weight: 600;
+    color: #334155;
+}
+
+/* Responsividade de Alinhamento */
+@media (max-width: 1024px) {
+    .grid { gap: 1rem; }
+    .card { padding: 1rem; }
+}
